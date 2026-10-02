@@ -1,12 +1,23 @@
 # Roteiro do vídeo – Sprint 4 DevOps (CI/CD com Azure DevOps)
 
-**Duração estimada:** de 15 a 20 minutos.
+**Duração estimada:** de 20 a 25 minutos, com as esperas da pipeline.
 **Requisitos do vídeo:** 720p ou mais (grave em 1080p), voz clara, **sem legendas**.
 
 **Como ler este roteiro:**
 - **[TELA]** diz o que mostrar. **[FALA]** é o texto sugerido para ler.
 - Troque os `<campos>` pelos dados do seu projeto.
 - Fale com naturalidade: não precisa decorar, só não pule nenhum item.
+
+**Antes de começar:** veja o arquivo `CHECKLIST_GRAVACAO.md`. O agente (`run.cmd`) precisa estar aberto e a aplicação "acordada" no navegador.
+
+**Tempos de espera na gravação (use para explicar, nunca corte):**
+
+| Etapa | Duração aproximada |
+|---|---|
+| Início automático do CI após o push | 10 a 30 segundos |
+| CI (build, testes, artefato) | 2 a 5 minutos |
+| CD (download e deploy) | 1 a 3 minutos |
+| Reinício do app Java depois do deploy | 1 a 2 minutos |
 
 > **Regra de ouro:** não corte o vídeo entre o commit e o fim do CRUD. Enquanto a pipeline roda, **explique** cada etapa (isso vale -20 pontos se faltar). Use o tempo de espera, não o corte.
 
@@ -96,7 +107,7 @@ Passe rapidamente por cada aba já aberta.
 **[FALA] – CI**
 > "Temos duas pipelines em YAML: a `sprint4-ci` e a `sprint4-cd`. Começando pelo CI:
 > - O **trigger** está configurado na branch `master`. Toda alteração de código nessa branch dispara o CI automaticamente.
-> - Ele roda em um agente `<ubuntu-latest da Microsoft / self-hosted>`.
+> - Ele roda em um **agente self-hosted**, instalado na minha máquina, no pool `Default`. [Mostre a janela do `run.cmd` com `Listening for Jobs`.]
 > - O **stage CI** tem um job com estas tasks:
 >   - primeiro, a task do **Maven**, que compila, roda os testes e empacota o `.jar`;
 >   - os resultados dos testes são publicados para aparecerem na aba **Tests**;
@@ -145,7 +156,7 @@ Passe rapidamente por cada aba já aberta.
 Em seguida, no terminal da IDE:
 ```bash
 git add .
-git commit -m "feat: altera titulo da API para demonstrar CI/CD"
+git commit -m "feat: altera titulo da API para v2 (demonstracao CI/CD)"
 git push origin master
 ```
 
@@ -166,7 +177,7 @@ git push origin master
 > - **Initialize job / Checkout:** o agente é preparado e baixa o código do GitHub, no commit que acabei de enviar.
 > - `mvn clean package`: aqui ele baixa as dependências e compila a aplicação. Se houvesse erro de compilação, a esteira pararia aqui.
 > - **Testes:** aqui rodam os testes automatizados JUnit. Estão sendo executados 9 testes: contexto da aplicação, segurança por perfil e serviço de alertas. Se algum teste falhar, o artefato não é gerado e nada vai para produção. Essa é a garantia de qualidade do CI.
-> - `<Copy files / dotnet publish>`: aqui é gerado o pacote que será implantado.
+> - **Copy files:** o `.jar` gerado é copiado para a área de staging, que é o pacote que será implantado.
 > - **Publish Pipeline Artifact:** o pacote é publicado como artefato `drop` dentro do Azure DevOps.
 > - Finalize: o agente é liberado. O CI terminou com sucesso."
 

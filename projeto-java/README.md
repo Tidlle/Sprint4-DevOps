@@ -38,7 +38,7 @@ O **Clyvo VitalPet** acompanha o pet **depois** da consulta. Ao finalizar um ate
 | Build | Maven (com Maven Wrapper) |
 | Hospedagem | Azure App Service (Web App Linux, Java 17) |
 | Código-fonte | GitHub (branch `master`) |
-| CI/CD | Azure DevOps (Azure Pipelines em YAML, Artifacts, Library, Service Connection) |
+| CI/CD | Azure DevOps (Azure Pipelines em YAML, agente self-hosted, Artifacts, Library, Service Connection) |
 | Infraestrutura | Azure CLI (`scripts/infra-azure.sh`) |
 
 ## Arquitetura e fluxo CI/CD
@@ -91,7 +91,8 @@ O script cria o Resource Group `rg-vitalpet-sprint4`, o Azure SQL Server com o b
 1. Criar o projeto **Sprint 4 - Azure DevOps** (privado, Git, Scrum) e convidar o professor com acesso **Basic**.
 2. Criar a Service Connection **`sc-azure-sprint4`** (Azure Resource Manager, Workload Identity federation).
 3. Criar na Library o variable group **`sprint4-secrets`** com `DB_URL`, `DB_USER` e `DB_PASSWORD` (todas secretas).
-4. Criar a pipeline **`sprint4-ci`** a partir de `azure-pipelines-ci.yml` e a pipeline **`sprint4-cd`** a partir de `azure-pipelines-cd.yml`.
+4. Registrar um **agente self-hosted** no pool `Default` (Organization settings → Agent pools → Default → New agent), com `JAVA_HOME_21_X64` definido. Com agente Microsoft-hosted, troque `pool` por `vmImage: ubuntu-latest` nos dois YAML.
+5. Criar a pipeline **`sprint4-ci`** a partir de `azure-pipelines-ci.yml` e a pipeline **`sprint4-cd`** a partir de `azure-pipelines-cd.yml`.
 
 ### 3. Fazer o deploy
 
@@ -186,7 +187,7 @@ SELECT version, description, success FROM flyway_schema_history;
 ├── azure-pipelines-ci.yml        # Pipeline de CI
 ├── azure-pipelines-cd.yml        # Pipeline de CD
 ├── scripts/infra-azure.sh        # Criação dos recursos Azure via CLI
-├── docs/arquitetura-DevOps.png     # Diagrama da arquitetura + fluxo CI/CD
+├── docs/arquitetura-DevOps.png   # Diagrama da arquitetura + fluxo CI/CD
 ├── src/main/java/...             # Código da aplicação
 ├── src/main/resources/
 │   ├── application.properties          # Perfil padrão (H2, local e testes)
