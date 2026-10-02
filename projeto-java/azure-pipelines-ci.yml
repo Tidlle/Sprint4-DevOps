@@ -1,0 +1,46 @@
+# Pipeline de CI - Clyvo VitalPet (Java 17 / Maven)
+# No Azure DevOps, renomeie esta pipeline para: sprint4-ci
+trigger:
+  branches:
+    include:
+      - master            # CI dispara a cada alteração na master
+  paths:
+    exclude:
+      - README.md
+      - docs/*
+      - assets/*
+
+pr: none
+
+pool:
+  name: Default           # agente self-hosted (PC do aluno). Com agente Microsoft-hosted: vmImage: ubuntu-latest
+
+stages:
+  - stage: CI
+    displayName: 'CI - Build, Testes e Artefato'
+    jobs:
+      - job: BuildTest
+        displayName: 'Build + Testes + Publicacao do artefato'
+        steps:
+          - task: Maven@4
+            displayName: 'Maven: compilar, rodar testes (JUnit) e empacotar o .jar'
+            inputs:
+              mavenPomFile: 'pom.xml'
+              goals: 'clean package'
+              javaHomeOption: 'JDKVersion'
+              jdkVersionOption: '1.21'        # JDK 21 do agente (variavel JAVA_HOME_21_X64); o projeto compila para Java 17
+              publishJUnitResults: true
+              testResultsFiles: '**/surefire-reports/TEST-*.xml'
+
+          - task: CopyFiles@2
+            displayName: 'Copiar o .jar para a area de staging'
+            inputs:
+              SourceFolder: '$(System.DefaultWorkingDirectory)/target'
+              Contents: 'clyvo-vitalpet-*.jar'
+              TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publicar artefato "drop" no Azure DevOps'
+            inputs:
+              targetPath: '$(Build.ArtifactStagingDirectory)'
+              artifact: 'drop'

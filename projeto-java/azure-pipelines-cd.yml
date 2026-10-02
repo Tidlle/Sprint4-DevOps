@@ -1,0 +1,53 @@
+# Pipeline de CD - Clyvo VitalPet -> Azure Web App
+# No Azure DevOps, renomeie esta pipeline para: sprint4-cd
+trigger: none   # nao dispara por commit...
+pr: none
+
+resources:
+  pipelines:
+    - pipeline: ci              # alias local
+      source: 'sprint4-ci'      # ...e sim quando a pipeline sprint4-ci gera um novo artefato
+      trigger:
+        branches:
+          include:
+            - master
+
+variables:
+  - group: sprint4-secrets      # DB_URL, DB_USER, DB_PASSWORD (marcadas como secretas)
+  - name: webAppName
+    value: 'app-vitalpet-rm00000'   # AJUSTE: mesmo nome criado no infra-azure.sh
+
+pool:
+  name: Default                 # agente self-hosted (PC do aluno). Com agente Microsoft-hosted: vmImage: ubuntu-latest
+
+stages:
+  - stage: CD
+    displayName: 'CD - Deploy no Azure Web App'
+    jobs:
+      - job: Deploy
+        displayName: 'Deploy da aplicacao'
+        steps:
+          - download: ci
+            artifact: drop
+            displayName: 'Baixar o artefato gerado pelo CI'
+
+          - task: AzureWebApp@1
+            displayName: 'Deploy no Azure Web App + variaveis do banco'
+            inputs:
+              azureSubscription: 'sc-azure-sprint4'   # nome da Service Connection
+              appType: 'webAppLinux'
+              appName: '$(webAppName)'
+              runtimeStack: 'JAVA|17-java17'
+              package: '$(Pipeline.Workspace)/ci/drop/*.jar'
+              appSettings: >-
+                -SPRING_PROFILES_ACTIVE "sqlserver"
+                -SERVER_PORT "8080"
+                -WEBSITES_PORT "8080"
+                -SPRING_DATASOURCE_URL "$(DB_URL)"
+                -SPRING_DATASOURCE_USERNAME "$(DB_USER)"
+                -SPRING_DATASOURCE_PASSWORD "$(DB_PASSWORD)"
+
+          - script: |
+              echo "Aplicacao publicada em: https://$(webAppName).azurewebsites.net"
+              echo "Swagger: https://$(webAppName).azurewebsites.net/swagger-ui.html"
+            displayName: 'URLs da aplicacao'
