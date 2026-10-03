@@ -15,7 +15,7 @@ resources:
 variables:
   - group: sprint4-secrets      # DB_URL, DB_USER, DB_PASSWORD (marcadas como secretas)
   - name: webAppName
-    value: 'app-vitalpet-rm00000'   # AJUSTE: mesmo nome criado no infra-azure.sh
+    value: 'app-vitalpet-rm562259'   # AJUSTE: mesmo nome criado no infra-azure.sh
 
 pool:
   name: Default                 # agente self-hosted (PC do aluno). Com agente Microsoft-hosted: vmImage: ubuntu-latest
