@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<div th:fragment="topo(secao)">
+    <header class="topbar">
+        <span class="brand"><img th:src="@{/img/logo-icon-blue.svg}" class="logo-mark" alt="VitalPet"> VitalPet</span>
+        <span class="usuario" sec:authorize="isAuthenticated()">
+            <span class="avatar" th:text="${#strings.substring(#authentication.name,0,1).toUpperCase()}">U</span>
+            <span class="quem">
+                <span class="nome" sec:authentication="name">usuário</span>
+                <span class="perfil" sec:authorize="hasRole('ADMIN')">Admin</span>
+                <span class="perfil" sec:authorize="hasRole('VETERINARIO')">Veterinário</span>
+            </span>
+            <form th:action="@{/web/logout}" method="post">
+                <button type="submit">
+                    <img th:src="@{/img/icons/icon-logout.svg}" class="icone-svg" width="15" height="15" alt="">
+                    Sair
+                </button>
+            </form>
+        </span>
+    </header>
+    <nav class="menu" sec:authorize="isAuthenticated()">
+        <a th:href="@{/web/dashboard}" th:classappend="${secao == 'dashboard'} ? 'ativo'">
+            <img th:src="@{/img/icons/icon-home.svg}" class="icone-svg" width="16" height="16" alt="">Dashboard</a>
+        <span class="grupo-admin" sec:authorize="hasRole('ADMIN')">
+            <a th:href="@{/web/clinicas}" th:classappend="${secao == 'clinicas'} ? 'ativo'">
+                <img th:src="@{/img/icons/profile-clinic.svg}" class="icone-svg" width="16" height="16" alt="">Clínicas</a>
+            <a th:href="@{/web/veterinarios}" th:classappend="${secao == 'veterinarios'} ? 'ativo'">
+                <img th:src="@{/img/icons/icon-user-data.svg}" class="icone-svg" width="16" height="16" alt="">Veterinários</a>
+            <a th:href="@{/web/tutores}" th:classappend="${secao == 'tutores'} ? 'ativo'">
+                <img th:src="@{/img/icons/profile-tutor.svg}" class="icone-svg" width="16" height="16" alt="">Tutores</a>
+        </span>
+        <a th:href="@{/web/pets}" th:classappend="${secao == 'pets'} ? 'ativo'">
+            <img th:src="@{/img/icons/icon-paw.svg}" class="icone-svg" width="16" height="16" alt="">Pets</a>
+        <a th:href="@{/web/consultas}" th:classappend="${secao == 'consultas'} ? 'ativo'">
+            <img th:src="@{/img/icons/icon-consult.svg}" class="icone-svg" width="16" height="16" alt="">Consultas</a>
+        <a th:href="@{/web/alertas}" th:classappend="${secao == 'alertas'} ? 'ativo'">
+            <img th:src="@{/img/icons/icon-bell.svg}" class="icone-svg" width="16" height="16" alt="">Alertas</a>
+    </nav>
+</div>
+</body>
+</html>

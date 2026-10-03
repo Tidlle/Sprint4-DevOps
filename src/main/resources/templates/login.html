@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>VitalPet - Login</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="login-wrap">
+    <div class="login-card">
+        <img th:src="@{/img/logo-white.svg}" class="logo-mark" alt="VitalPet">
+        <h1>Cuide melhor do<br>seu pet com o VitalPet</h1>
+        <p class="subtitulo">Acompanhe consultas, acompanhamentos e alertas de retorno em um só lugar.</p>
+
+        <p class="alerta-flash erro" th:if="${erro}">E-mail ou senha inválidos.</p>
+        <p class="alerta-flash sucesso" th:if="${logout}">Você saiu do sistema.</p>
+
+        <form th:action="@{/web/login}" method="post">
+            <div class="campo">
+                <label for="username">E-mail</label>
+                <input type="email" id="username" name="username" required autofocus>
+            </div>
+            <div class="campo">
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Entrar</button>
+        </form>
+
+        <div class="info-box">
+            <img th:src="@{/img/icons/security-lock.svg}" class="icone-svg" width="20" height="20" alt="">
+            <span>Seus dados estão protegidos e o acesso é restrito por perfil (Admin ou Veterinário).</span>
+        </div>
+    </div>
+</div>
+</body>
+</html>
