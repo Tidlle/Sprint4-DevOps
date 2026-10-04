@@ -126,7 +126,7 @@ Não há senha de banco no código (o H2 usa `sa` sem senha). As senhas dos usu�
    - Azure SQL Server `sql-vitalpet-<RM>` e o banco `vitalpet` (tier Basic), com firewall liberado para serviços Azure
    - Regra de firewall para o IP do seu PC (opcional, necessária para os SELECTs do vídeo; veja seu IP em https://api.ipify.org)
    - App Service Plan Linux B1 e Web App `app-vitalpet-<RM>` com Java 17
-   - Configurações `SPRING_PROFILES_ACTIVE=sqlserver`, `SERVER_PORT=8080` e `WEBSITES_PORT=8080`
+   - Configuração `SPRING_PROFILES_ACTIVE=sqlserver` (a porta fica no padrão do App Service, 80)
 5. No fim, o script **imprime os valores de `DB_URL`, `DB_USER` e `DB_PASSWORD`**. Guarde-os, porque vão para a Library na etapa E.
 6. **Não crie as tabelas à mão.** O Flyway cria o schema e o seed (clínicas, vets, pets, usuários) no primeiro start do app, pelo CD.
 

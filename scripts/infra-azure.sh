@@ -58,7 +58,7 @@ az webapp create -g "$RG" -p "$PLAN" -n "$APP" --runtime "JAVA:17-java17" -o tab
 
 echo ">> Configuracoes nao sensiveis do Web App"
 az webapp config appsettings set -g "$RG" -n "$APP" --settings \
-  SPRING_PROFILES_ACTIVE=sqlserver SERVER_PORT=8080 WEBSITES_PORT=8080 -o none
+  SPRING_PROFILES_ACTIVE=sqlserver -o none
 
 echo ">> Logs da aplicacao (util para debug)"
 az webapp log config -g "$RG" -n "$APP" \
